@@ -1,85 +1,86 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
+using TaskManagement.Service;
+using TaskManagement.Models;
 
 namespace TaskManagement.Controllers
 {
     public class TaskController : Controller
     {
+
+
         // GET: TaskController
         public ActionResult Index()
         {
-            //console.log("Hello World");
+           
+            //call task service to get the list of tasks
+            var tasks = TaskService.GetTasks();
             
-            return View();
+            return View(tasks);
         }
 
         // GET: TaskController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            //get the task by id
+            var task = TaskService.GetTasks().Find(t => t.Id == id);
+
+            return View(task);
         }
 
         // GET: TaskController/Create
         public ActionResult Create()
         {
-            return View();
+            //create a new task
+            CapTask task = new CapTask();
+
+            return View(task);
         }
+
 
         // POST: TaskController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(CapTask task)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            //add task to task service
+            TaskService.AddTask(task);
+
+            
+           return RedirectToAction(nameof(Index));
+            
         }
 
         // GET: TaskController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            //get the task by id
+            var task = TaskService.GetTasks().Find(t => t.Id == id);
+
+
+            return View(task);
         }
 
         // POST: TaskController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(CapTask capTask)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            //update the task
+            TaskService.UpdateTask(capTask);
+
+           return RedirectToAction(nameof(Index));
         }
 
         // GET: TaskController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+           //call remove task from task service
+            TaskService.RemoveTask(TaskService.GetTasks().Find(t => t.Id == id));
+
+            return RedirectToAction(nameof(Index));
         }
 
-        // POST: TaskController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+       
     }
 }
